@@ -1,0 +1,20 @@
+[package]
+name = "kankinge-solver-rs-core"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+
+[features]
+serde = ["dep:serde"]
+
+[dependencies]
+fixedbitset = "0.5"
+phf = { version = "0.14", features = ["macros"] }
+rustc-hash = "2.1"
+serde = { workspace = true, optional = true }
+serde_json = { workspace = true }
+strum = { version = "0.28", features = ["derive"] }
+
+[lints.clippy]
+pedantic = "warn"
+missing_errors_doc = "allow"

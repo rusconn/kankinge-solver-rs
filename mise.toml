@@ -1,0 +1,44 @@
+[tasks.bfs]
+depends = ["build-release"]
+usage = '''
+arg "<stage_json>"
+'''
+run = "time ./target/release/ksr ${usage_stage_json?} bfs --allow-leak"
+
+[tasks.iddfs]
+depends = ["build-release"]
+usage = '''
+arg "<stage_json>"
+'''
+run = "time ./target/release/ksr ${usage_stage_json?} iddfs"
+
+[tasks.build-release]
+hide = true
+run = "cargo build --release"
+
+[tasks.profile-bfs]
+depends = ["build-profiling"]
+usage = '''
+arg "<stage_json>"
+arg "[output]" default="profiles/bfs.json.gz"
+'''
+run = "samply record --output ${usage_output?} ./target/profiling/ksr ${usage_stage_json?} bfs --allow-leak"
+
+[tasks.profile-iddfs]
+depends = ["build-profiling"]
+usage = '''
+arg "<stage_json>"
+arg "[output]" default="profiles/iddfs.json.gz"
+'''
+run = "samply record --output ${usage_output?} ./target/profiling/ksr ${usage_stage_json?} iddfs"
+
+[tasks.build-profiling]
+hide = true
+run = "cargo build --profile profiling"
+
+[tasks.check]
+run = '''
+cargo check --all-features
+cargo clippy --all-features
+cargo fmt --check
+'''
