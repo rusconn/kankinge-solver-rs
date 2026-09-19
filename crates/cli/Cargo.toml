@@ -1,0 +1,18 @@
+[package]
+name = "kankinge-solver-rs-cli"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+
+[[bin]]
+name = "ksr"
+path = "src/main.rs"
+
+[dependencies]
+kankinge-solver-rs-core = { path = "../core", version = "0.1.0", features = ["serde"] }
+mimalloc = "0.1"
+serde_json = { workspace = true }
+
+[lints.clippy]
+pedantic = "warn"
+missing_errors_doc = "allow"

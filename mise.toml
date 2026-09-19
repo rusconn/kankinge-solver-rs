@@ -1,0 +1,31 @@
+[tasks.exec]
+depends = ["build-release"]
+usage = '''
+arg "[stage]"
+arg "[algorithm]"
+'''
+run = "time ./target/release/ksr ${usage_stage?} ${usage_algorithm?}"
+
+[tasks.build-release]
+hide = true
+run = "cargo build --release"
+
+[tasks.profile]
+depends = ["build-profiling"]
+usage = '''
+arg "[stage]"
+arg "[algorithm]"
+arg "[output]" default="profiles/profile.json.gz"
+'''
+run = "samply record --output ${usage_output?} ./target/profiling/ksr ${usage_stage?} ${usage_algorithm?}"
+
+[tasks.build-profiling]
+hide = true
+run = "cargo build --profile profiling"
+
+[tasks.check]
+run = '''
+cargo check
+cargo clippy
+cargo fmt --check
+'''
