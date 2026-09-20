@@ -11,15 +11,12 @@ pub(crate) use instance::{Instance, InstanceId, InstanceSet};
 use cell::Cell;
 use grid::{Grid, GridIndex};
 
-use crate::Point;
-
 pub struct Stage {
     instances: Vec<Instance>,
     neighbors_list: Vec<InstanceSet>,
     start_neighbors: InstanceSet,
     goal: Instance,
     count: InstanceCount,
-    width: usize,
 }
 
 impl Stage {
@@ -82,7 +79,6 @@ impl Stage {
             start_neighbors,
             goal,
             count,
-            width: grid.width(),
         })
     }
 
@@ -104,9 +100,5 @@ impl Stage {
 
     pub(crate) fn neighbors_of(&self, instance_id: InstanceId) -> &InstanceSet {
         &self.neighbors_list[instance_id.as_usize()]
-    }
-
-    pub(crate) fn point_of(&self, instance: &Instance) -> Point {
-        instance.index.as_point(self.width)
     }
 }

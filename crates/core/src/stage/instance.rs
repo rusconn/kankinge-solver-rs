@@ -28,7 +28,7 @@ impl Instance {
     }
 
     pub(crate) fn is_up(&self) -> bool {
-        self.object.is_u_8_up() || self.object.is_hp_up()
+        self.object.is_one_up() || self.object.is_hp_up()
     }
 
     pub(crate) fn is_goal(&self) -> bool {

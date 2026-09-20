@@ -3,7 +3,6 @@ mod status;
 use std::rc::Rc;
 
 use crate::{
-    ConvertKind,
     object::Object,
     stage::{Instance, InstanceId, InstanceSet, Stage},
 };
@@ -21,14 +20,7 @@ pub(crate) struct State {
 #[derive(Debug)]
 pub(crate) struct Child {
     pub(crate) state: State,
-    pub(crate) action: Action,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub(crate) enum Action {
-    Root,
-    Move(InstanceId),
-    Convert(ConvertKind),
+    pub(crate) moved_to: Option<InstanceId>,
 }
 
 impl State {
@@ -55,20 +47,13 @@ impl State {
             for neighbor in self.boundary.iter(stage) {
                 self.add_moved_state(buf, neighbor, stage);
             }
-            self.add_converted_states(buf);
         }
     }
 
     fn add_moved_state(&self, buf: &mut Vec<Child>, dest: &Instance, stage: &Stage) {
         let moved_status = match &dest.object {
-            Object::U8Up { kind, amount, .. } => self.status.get_u8_up(*kind, *amount),
-            Object::HpUp { amount, .. } => self.status.get_hp_up(*amount),
-            Object::Gate { kind, .. } => {
-                let Some(moved_status) = self.status.try_open_gate(*kind) else {
-                    return;
-                };
-                moved_status
-            }
+            Object::OneUp { kind, .. } => self.status.get_one_up(*kind),
+            Object::HpUp { .. } => self.status.get_hp_up(),
             Object::Enemy(enemy) => {
                 let Some(moved_status) = self.status.try_battle(enemy) else {
                     return;
@@ -80,7 +65,7 @@ impl State {
 
         buf.push(Child {
             state: self.moved(moved_status, dest, stage),
-            action: Action::Move(dest.id),
+            moved_to: Some(dest.id),
         });
     }
 
@@ -98,35 +83,6 @@ impl State {
             status: moved_status,
             erased: Rc::new(erased),
             boundary,
-        }
-    }
-
-    fn add_converted_states(&self, buf: &mut Vec<Child>) {
-        if let Some(silver) = self.status.try_convert_silver() {
-            buf.push(self.converted(ConvertKind::Silver, silver));
-        }
-
-        if let Some((hp, atk, def)) = self.status.try_convert_hp_atk_def() {
-            buf.push(self.converted(ConvertKind::Hp, hp));
-            buf.push(self.converted(ConvertKind::Atk, atk));
-            buf.push(self.converted(ConvertKind::Def, def));
-        }
-
-        if let Some(gold) = self.status.try_convert_gold() {
-            buf.push(self.converted(ConvertKind::Gold, gold));
-        }
-    }
-
-    fn converted(&self, kind: ConvertKind, converted_status: Status) -> Child {
-        let converted_state = Self {
-            status: converted_status,
-            erased: Rc::clone(&self.erased),
-            boundary: self.boundary.clone(),
-        };
-
-        Child {
-            state: converted_state,
-            action: Action::Convert(kind),
         }
     }
 

@@ -71,17 +71,18 @@ fn progress(depth: u32, searched: usize, ms: u128) {
 }
 
 fn to_solution(arena: &Arena, goal_idx: ArenaIndex, stage: &Stage) -> Solution {
-    let mut actions = Vec::new();
+    let mut moved_tos = Vec::new();
     let mut idx = Some(goal_idx);
 
     while let Some(i) = idx
         && let node = &arena[i]
+        && let Some(moved_to) = node.moved_to
     {
-        actions.push(node.action);
+        moved_tos.push(moved_to);
         idx = node.parent;
     }
 
-    actions.reverse();
+    moved_tos.reverse();
 
-    Solution::new(arena[goal_idx].state.status, &actions, stage)
+    Solution::new(arena[goal_idx].state.status, &moved_tos, stage)
 }

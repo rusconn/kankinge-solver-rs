@@ -3,8 +3,6 @@ use std::{error, ops::Index};
 use fixedbitset::FixedBitSet;
 use serde_json::Value;
 
-use crate::Point;
-
 use super::{Cell, symbols};
 
 #[derive(Debug)]
@@ -63,10 +61,6 @@ impl Grid {
         self.cells.len()
     }
 
-    pub(super) fn width(&self) -> usize {
-        self.width
-    }
-
     pub(super) fn iter(&self) -> impl Iterator<Item = &&'static Cell> {
         self.cells.iter()
     }
@@ -122,13 +116,6 @@ impl From<usize> for GridIndex {
 impl GridIndex {
     pub(super) fn as_usize(self) -> usize {
         self.0
-    }
-
-    pub(crate) fn as_point(self, width: usize) -> Point {
-        Point {
-            x: self.0 % width,
-            y: self.0 / width,
-        }
     }
 
     fn up(self, width: usize) -> Option<Self> {
