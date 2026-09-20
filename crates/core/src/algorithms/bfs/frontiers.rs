@@ -78,16 +78,6 @@ fn compare(a: Status, b: Status) -> StatusCmp {
     check!(a.hp(), b.hp());
     check!(a.atk(), b.atk());
     check!(a.def(), b.def());
-    check!(a.gold(), b.gold());
-    check!(a.silver(), b.silver());
-    check!(a.blue(), b.blue());
-    check!(a.crystal(), b.crystal());
-
-    // 同一erased
-    //  → mag+level*20は一致する
-    //  → どちらか一方の比較だけで十分
-    //  → 変換によるup余地を残す分、高mag(=低level)の方が優れている
-    check!(a.mag(), b.mag());
 
     if self_gt {
         StatusCmp::Greater

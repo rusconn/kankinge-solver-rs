@@ -3,8 +3,6 @@ use std::{error, num::NonZeroUsize, ops::Index};
 use fixedbitset::FixedBitSet;
 use serde_json::Value;
 
-use crate::Point;
-
 use super::{Cell, symbols};
 
 #[derive(Debug)]
@@ -91,13 +89,6 @@ impl Grid {
         }
 
         reached.into_iter()
-    }
-
-    pub(super) fn point_of(&self, index: GridIndex) -> Point {
-        Point {
-            x: index.as_usize() % self.width.get(),
-            y: index.as_usize() / self.width.get(),
-        }
     }
 
     fn neighbors(&self, index: GridIndex) -> impl Iterator<Item = GridIndex> {

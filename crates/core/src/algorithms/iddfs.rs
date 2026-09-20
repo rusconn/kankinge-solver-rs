@@ -60,15 +60,17 @@ fn progress(limit: u16, searched: usize, ms: u128) {
 }
 
 fn to_solution(goal: &Rc<Node>, stage: &Stage) -> Solution {
-    let mut actions = Vec::new();
+    let mut moved_tos = Vec::new();
     let mut current = Some(Rc::clone(goal));
 
-    while let Some(n) = current.take() {
-        actions.push(n.action);
+    while let Some(n) = current.take()
+        && let Some(moved_to) = n.moved_to
+    {
+        moved_tos.push(moved_to);
         current.clone_from(&n.parent);
     }
 
-    actions.reverse();
+    moved_tos.reverse();
 
-    Solution::new(goal.state.status, &actions, stage)
+    Solution::new(goal.state.status, &moved_tos, stage)
 }
