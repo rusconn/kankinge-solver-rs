@@ -8,6 +8,7 @@ license = "MIT"
 serde = ["dep:serde"]
 
 [dependencies]
+bitfield-struct = "0.13"
 fixedbitset = "0.5"
 phf = { version = "0.14", features = ["macros"] }
 rustc-hash = "2.1"
