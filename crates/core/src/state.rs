@@ -131,6 +131,6 @@ impl State {
     }
 
     pub(crate) fn compare_status(&self, other: &Self) -> StatusCmp {
-        self.status.compare(&other.status)
+        self.status.compare(other.status)
     }
 }
